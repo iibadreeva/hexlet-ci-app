@@ -4,23 +4,29 @@ on:
   - push
   - pull_request
 
+env:
+  CI: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
 
-    steps:
-        # Клонируем репозиторий
-      - uses: actions/checkout@v3
+    strategy:
+      # Node versions list
+      matrix:
+        node-version: [16.x]
 
+    steps:
+      # Клонируем репозиторий
+      - uses: actions/checkout@v3
         # Step's name
       - name: Use Node.js ${{ matrix.node-version }}
         # Устанавливаем Node.js
-        - uses: actions/setup-node@v3
+        uses: actions/setup-node@v3
         # The Node.js version to configure
         with:
           node-version: ${{ matrix.node-version }}
           cache: 'npm'
-
       - run: make setup
       - run: make start
       - run: make test
